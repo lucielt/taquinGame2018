@@ -22,8 +22,8 @@ canvasSize();
 /* PUZZLE */
 
 var boardSize = canvas.width;
-var random = Math.floor((Math.random() * 3));
-var tileCount = 3;
+var random = Math.floor((Math.random() * 2));
+var tileCount = 2;
 var tileSize = boardSize / tileCount;
 var boardParts = {};
 var clickLoc = {
@@ -38,15 +38,15 @@ var solved = false;
 
 function setBoard() {
     boardParts =[];
-    for (var i = 0; i < tileCount; ++i) {
-        boardParts[i] = [];
-        for (var j = 0; j < tileCount; ++j) {
-            boardParts[i][j] = {
-                x: (tileCount - 1) - i,
-                y: (tileCount - 1) - j,
+    for (var raw = 0; raw < tileCount; ++raw) {
+        boardParts[raw] = [];
+        for (var column = 0; column < tileCount; ++column) {
+            boardParts[raw][column] = {
+                x: (tileCount - 1) - raw,
+                y: (tileCount - 1) - column,
             };
-            // console.log("x" + boardParts[i][j].x);
-            // console.log("y" + boardParts[i][j].x);
+            // remplacer l'attribution de x2 et y2 par une fonction random qui
+            // check si le nombre a déjà été attribué ou s'il est égal à x / y
         }
         console.log(boardParts);
     }
@@ -56,27 +56,26 @@ function setBoard() {
 
     emptyLoc.x = boardParts[random][random].x;
     emptyLoc.y = boardParts[random][random].y;
-    console.log("empty x " + emptyLoc.x);
-    console.log("empty y " + emptyLoc.x);
+    console.log("setBoard emptyTile" + emptyLoc.x + " " + emptyLoc.y);
     solved = false;
 }
 function drawTiles() {
     // Remove this line from here and move it to the onclick function to avoid
     // blank frame cause by the reset of the canvas context at each loop
     // context.clearRect ( 0 , 0 , boardSize , boardSize );
-    for (var i = 0; i < tileCount; ++i) {
-        for (var j = 0; j < tileCount; ++j) {
-            var x = boardParts[i][j].x;
-            var y = boardParts[i][j].y;
-            if (i !== emptyLoc.x || j !== emptyLoc.y || solved) {
+    for (var raw = 0; raw < tileCount; ++raw) {
+        for (var column = 0; column < tileCount; ++column) {
+            var x = boardParts[raw][column].x;
+            var y = boardParts[raw][column].y;
+            if (raw !== emptyLoc.x || column !== emptyLoc.y || solved) {
                 context.drawImage(
                     video,
                     x * tileSize * ratio,
                     y * tileSize * ratio,
                     tileSize * ratio ,
                     tileSize * ratio,
-                    i * tileSize,
-                    j * tileSize,
+                    raw * tileSize,
+                    column * tileSize,
                     tileSize,
                     tileSize
                 );
@@ -92,10 +91,14 @@ function distance(x1, y1, x2, y2) {
 
 function slideTile(toLoc, fromLoc) {
     if (!solved) {
+        var initialX = boardParts[toLoc.x][toLoc.y].x;
+        var initialY = boardParts[toLoc.x][toLoc.y].y;
         boardParts[toLoc.x][toLoc.y].x = boardParts[fromLoc.x][fromLoc.y].x;
         boardParts[toLoc.x][toLoc.y].y = boardParts[fromLoc.x][fromLoc.y].y;
-        boardParts[fromLoc.x][fromLoc.y].x = tileCount - 1;
-        boardParts[fromLoc.x][fromLoc.y].y = tileCount - 1;
+        boardParts[fromLoc.x][fromLoc.y].x = initialX;
+        boardParts[fromLoc.x][fromLoc.y].y = initialY;
+        console.log("new boardpart new loc " + boardParts[toLoc.x][toLoc.y].x + " " + boardParts[toLoc.x][toLoc.y].y);
+        console.log(" new boardpart new empty - click" + boardParts[fromLoc.x][fromLoc.y].x + " " + boardParts[fromLoc.x][fromLoc.y].y);
         toLoc.x = fromLoc.x;
         toLoc.y = fromLoc.y;
         checkSolved();
@@ -103,22 +106,16 @@ function slideTile(toLoc, fromLoc) {
 }
 
 function checkSolved() {
-    var flag = true;
-    for (var i = 0; i < tileCount; ++i) {
-        for (var j = 0; j < tileCount; ++j) {
-            if (boardParts[i][j].x != i || boardParts[i][j].y != j) {
-                flag = false;
-            }
-            else{
-                console.log("result");
-                console.log("check x : " + boardParts[i][j].x + "check i : " + i);
-                console.log("check y : " + boardParts[i][j].y + "check j : " + j);
+    solved = true;
+    // console.log("result", boardParts);
+
+    for (var raw = 0; raw < tileCount; ++raw) {
+        for (var column = 0; column < tileCount; ++column) {
+            if (boardParts[raw][column].x != raw || boardParts[raw][column].y != column) {
+                solved = false;
             }
         }
-
     }
-    console.log(flag);
-    solved = flag;
 }
 
 // redrw puzzle on resize - for now on scale //
@@ -138,6 +135,8 @@ canvas.addEventListener('mousemove', function(e) {
 // Track mouse movement
 canvas.addEventListener('click', function() {
     if (distance(clickLoc.x, clickLoc.y, emptyLoc.x, emptyLoc.y) === 1) {
+        console.log("emptyTile" + emptyLoc.x + " " + emptyLoc.y);
+        console.log("click" + clickLoc.x + " " + clickLoc.y);
         slideTile(emptyLoc, clickLoc);
         // resets the entire context of the canvas before re-draw tiles
         // at new position
@@ -148,11 +147,6 @@ canvas.addEventListener('click', function() {
         setTimeout(function() {alert("You solved it!");}, 500);
     }
 });
-
-function toggleTextBtn(){
-    var strg = button.textContent;
-    var res = str.split(" ");
-}
 
 // Button to toggle video on/off
 button.addEventListener('click', function() {

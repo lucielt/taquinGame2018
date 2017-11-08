@@ -1,17 +1,16 @@
 @font-face {
-    font-family: 'bluuBold';
-    src: url('/font/bluunext-bold.eot');
-    src: url('/font/bluunext-bold-webfont.woff2') format('woff2'),
-         url('/font/bluunext-bold-webfont.woff') format('woff'),
-         url('/font/bluunext-bold.ttf') format('truetype'),
-         url('/font/bluunext-bold-webfont.svg#bluu_nextbold') format('svg');
+    font-family:'bluuBold';
+    src: url('/Users/lucieletouze/Projets/Lucie/201709-cartedevoeux/06_developpement/01/public/font/bluunext-bold-webfont.woff2') format('woff2'),
+         url('/Users/lucieletouze/Projets/Lucie/201709-cartedevoeux/06_developpement/01/public/font/bluunext-bold-webfont.woff') format('woff'),
+         url('/Users/lucieletouze/Projets/Lucie/201709-cartedevoeux/06_developpement/01/public/font/bluunext-bold.ttf') format('truetype'),
+         url('/Users/lucieletouze/Projets/Lucie/201709-cartedevoeux/06_developpement/01/public/font/bluunext-bold-webfont.svg#bluu_nextbold') format('svg');
     font-weight: normal;
     font-style: normal;
 
 }
 
 @font-face {
-    font-family: 'bluuItalic';
+    font-family:'bluuItalic';
     src: url('/font/bluunext-bolditalic-webfont.woff2') format('woff2'),
          url('/font/bluunext-bolditalic-webfont.woff') format('woff'),
          url('/font/bluunext-bolditalic.ttf') format('truetype'),
